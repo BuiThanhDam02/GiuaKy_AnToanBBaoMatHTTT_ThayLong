@@ -1,25 +1,31 @@
 package SymmetricEncryption;
-import javax.crypto.SecretKey;
+
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 
-public class AES {
-    private static AES instance ;
-    private static String name = "AES";
-    private static int bits = 128;
+public class TripleDES {
+
+    private static TripleDES instance;
+    private static String name = "DESede/ECB/PKCS5Padding";
+
+    private static String keyName = "DESede";
+    private static int bits = 168;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
 
-    public static AES getInstance(){
-        if (instance == null) instance = new AES();
+    public static TripleDES getInstance(){
+        if (instance == null) return instance = new TripleDES();
         return instance;
     }
 
-    private AES(){}
+    private TripleDES(){}
 
-
+    public String getKeyAlgoName(){
+        return keyName;
+    }
 
     public String encrypt(String inputString, String keyString){
-        SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);
+        SecretKey secretKey = converter.checkSecretKey(keyString,keyName,bits);
         if (secretKey != null){
             try {
                 Cipher cipher = Cipher.getInstance(name);
@@ -46,7 +52,7 @@ public class AES {
 
     public String decrypt(String inputString, String keyString){
         if ((keyString != null || keyString != "")){
-            SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);
+            SecretKey secretKey = converter.checkSecretKey(keyString,keyName,bits);
             try {
                 Cipher cipher = Cipher.getInstance(name);
                 // Dữ liệu cần giải mã
@@ -73,10 +79,9 @@ public class AES {
         return null;
     }
 
-
-    public static void main(String[] args) throws Exception {
-//       String encryptedStringData = AES.getInstance().encrypt("Vai thiet",null);
-       AES.getInstance().decrypt("zIPRuwF4DGO9X7L9hxKX/w==","5E5A027F8974F5E06F8C0B28F3F3E23F");
-
+    public static void main(String[] args) {
+//          TripleDES.getInstance().encrypt("Hello everybody!!",null);
+//          TripleDES.getInstance().decrypt("eBJOWZkVVxXL4TLTmZVaOuTWjhLqpZv5","75A81304D5649EC1F731DF5786EADA708AE5106451104908");
     }
+
 }
