@@ -1,22 +1,22 @@
-package SymmetricEncryption;
+package vn.edu.hcmuaf.fit.SymmetricEncryption;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class RC5 {
-    private static RC5 instance ;
-    private static String name = "RC5";
+public class RC6 {
+    private static RC6 instance ;
+    private static String name = "RC6";
     private static int bits = 128;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
 
-    public static RC5 getInstance(){
-        if (instance == null) instance = new RC5();
+    public static RC6 getInstance(){
+        if (instance == null) instance = new RC6();
         return instance;
     }
 
-    private RC5(){}
+    private RC6(){}
 
     public String encrypt(String inputString, String keyString){
         SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);

@@ -1,4 +1,4 @@
-package SymmetricEncryption;
+package vn.edu.hcmuaf.fit.SymmetricEncryption;
 import javax.crypto.SecretKey;
 import javax.crypto.Cipher;
 import java.util.Base64;

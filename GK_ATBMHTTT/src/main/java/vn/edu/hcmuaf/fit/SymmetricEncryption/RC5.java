@@ -1,22 +1,22 @@
-package SymmetricEncryption;
+package vn.edu.hcmuaf.fit.SymmetricEncryption;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class Blowfish {
-    private static Blowfish instance ;
-    private static String name = "Blowfish";
+public class RC5 {
+    private static RC5 instance ;
+    private static String name = "RC5";
     private static int bits = 128;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
 
-    public static Blowfish getInstance(){
-        if (instance == null) instance = new Blowfish();
+    public static RC5 getInstance(){
+        if (instance == null) instance = new RC5();
         return instance;
     }
 
-    private Blowfish(){}
+    private RC5(){}
 
     public String encrypt(String inputString, String keyString){
         SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);
@@ -71,10 +71,5 @@ public class Blowfish {
             System.out.println("Bạn phải có key để giải mã!!");
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-//        Blowfish.getInstance().encrypt("Hello anh chi em",null);
-//        Blowfish.getInstance().decrypt("UouNNoJiM92dvBZ7xEt3da9IerbR3qWA","B37EF459B25DEB50B4A2AFD6838F3E34");
     }
 }

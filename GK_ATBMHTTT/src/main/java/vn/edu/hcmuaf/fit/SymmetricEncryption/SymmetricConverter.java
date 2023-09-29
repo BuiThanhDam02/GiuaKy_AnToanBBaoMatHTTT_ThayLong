@@ -1,8 +1,9 @@
-package SymmetricEncryption;
+package vn.edu.hcmuaf.fit.SymmetricEncryption;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.SecureRandom;
 
 public class SymmetricConverter {
     private static SymmetricConverter instance;
@@ -17,6 +18,20 @@ public class SymmetricConverter {
     public String secretKeyToString(SecretKey secretKey) {
         byte[] encodedKey = secretKey.getEncoded();
         return bytesToHex(encodedKey);
+    }
+
+    public byte[] generateRandomKey(int bits) {
+        byte[] key = new byte[bits/8]; // Twofish sử dụng khóa 256-bit (32 bytes)
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(key);
+        return key;
+    }
+
+    public byte[] generateRandomIV(int bits) {
+        byte[] iv = new byte[bits/8]; // Độ dài vector khởi tạo (IV) cần phù hợp với khối dữ liệu của thuật toán
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
+        return iv;
     }
 
     public String bytesToHex(byte[] bytes) {
