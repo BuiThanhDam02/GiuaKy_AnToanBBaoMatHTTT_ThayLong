@@ -4,6 +4,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class SymmetricConverter {
     private static SymmetricConverter instance;
@@ -17,7 +18,8 @@ public class SymmetricConverter {
 
     public String secretKeyToString(SecretKey secretKey) {
         byte[] encodedKey = secretKey.getEncoded();
-        return bytesToHex(encodedKey);
+        String rs =Base64.getEncoder().encodeToString(encodedKey);
+        return rs;
     }
 
     public byte[] generateRandomKey(int bits) {
@@ -35,27 +37,21 @@ public class SymmetricConverter {
     }
 
     public String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
-        return sb.toString();
+        String rs =Base64.getEncoder().encodeToString(bytes);
+        return rs;
     }
     public byte[] hexStringToByteArray(String hexString) {
         int length = hexString.length();
         byte[] bytes = new byte[length / 2];
 
-        for (int i = 0; i < length; i += 2) {
-            bytes[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-                    + Character.digit(hexString.charAt(i + 1), 16));
-        }
+        bytes = Base64.getDecoder().decode(hexString);
         return bytes;
     }
     public SecretKey stringToSecretKey(String keyString, String algorithmName, int bits){
         byte[] keyBytes = hexStringToByteArray(keyString);
         byte[] truncatedKeyBytes = new byte[21];
 
-        if (algorithmName.equals(TripleDES.getInstance().getKeyAlgoName())){
+        if (algorithmName.equals(new TripleDES().getKeyAlgoName())){
             System.arraycopy(keyBytes, 0, truncatedKeyBytes, 0, 21);
         }else{
             truncatedKeyBytes = keyBytes;
@@ -72,7 +68,7 @@ public class SymmetricConverter {
         }
     }
 
-    public SecretKey checkSecretKey( String key , String algoName , int algoBits ){
+    public SecretKey generateSecretKey(String key , String algoName , int algoBits ){
         if (!(key == "" || key == null)){
             System.out.println("KeyString tồn tại!");
             try {

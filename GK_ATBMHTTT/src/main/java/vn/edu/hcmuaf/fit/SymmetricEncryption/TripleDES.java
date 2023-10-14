@@ -2,6 +2,7 @@ package vn.edu.hcmuaf.fit.SymmetricEncryption;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import java.io.*;
 import java.util.Base64;
 
 public class TripleDES {
@@ -11,21 +12,22 @@ public class TripleDES {
 
     private static String keyName = "DESede";
     private static int bits = 168;
+    private SecretKey secretKey ;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
 
-    public static TripleDES getInstance(){
-        if (instance == null) return instance = new TripleDES();
-        return instance;
-    }
 
-    private TripleDES(){}
+    public TripleDES(){
+        this.secretKey = converter.generateSecretKey(null,keyName,168);
+    }
 
     public String getKeyAlgoName(){
         return keyName;
     }
-
-    public String encrypt(String inputString, String keyString){
-        SecretKey secretKey = converter.checkSecretKey(keyString,keyName,bits);
+    public SecretKey exportSecretKey(){
+        return this.secretKey;
+    }
+    public String encrypt(String inputString){
+        SecretKey secretKey = exportSecretKey();
         if (secretKey != null){
             try {
                 Cipher cipher = Cipher.getInstance(name);
@@ -50,9 +52,9 @@ public class TripleDES {
         return null;
     }
 
-    public String decrypt(String inputString, String keyString){
-        if ((keyString != null || keyString != "")){
-            SecretKey secretKey = converter.checkSecretKey(keyString,keyName,bits);
+    public String decrypt(String inputString){
+//        if ((keyString != null || keyString != "")){
+            SecretKey secretKey = exportSecretKey();
             try {
                 Cipher cipher = Cipher.getInstance(name);
                 // Dữ liệu cần giải mã
@@ -73,15 +75,84 @@ public class TripleDES {
                 e.printStackTrace();
             }
 
-        }else {
-            System.out.println("Bạn phải có key để giải mã!!");
-        }
+//        }else {
+//            System.out.println("Bạn phải có key để giải mã!!");
+//        }
         return null;
     }
 
-    public static void main(String[] args) {
-//          TripleDES.getInstance().encrypt("Hello everybody!!",null);
-//          TripleDES.getInstance().decrypt("eBJOWZkVVxXL4TLTmZVaOuTWjhLqpZv5","75A81304D5649EC1F731DF5786EADA708AE5106451104908");
+    public void encryptFile(String sourceFile,String destFile) throws Exception{
+        SecretKey secretKey = exportSecretKey();
+        if(secretKey==null) throw new FileNotFoundException("Key not found");
+        File file=new File(sourceFile);
+        if(file.isFile()){
+            Cipher cipher=Cipher.getInstance(name);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+            FileInputStream fis= new FileInputStream(file);
+            FileOutputStream fos=new FileOutputStream(destFile);
+
+            byte[] input=new byte[64];
+            int byteRead = 0;
+            while((byteRead= fis.read(input))!=-1){
+                byte[] output=cipher.update(input,0,byteRead);
+                if(output!=null){
+                    fos.write(output);
+                }
+            }
+            byte[] output=cipher.doFinal();
+            if(output!=null){
+                fos.write(output);
+            }
+            fis.close();
+            fos.flush();
+            fis.close();
+            System.out.println("Encrypted");
+
+        }else{
+            System.out.println("This is not a file");
+        }
+    }
+    public void decryptFile(String sourceFile,String destFile) throws  Exception{
+        SecretKey secretKey = exportSecretKey();
+        if(secretKey==null) throw new FileNotFoundException("Key not found");
+        File file=new File(sourceFile);
+        if(file.isFile()){
+            Cipher cipher=Cipher.getInstance(name);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+            FileInputStream fis= new FileInputStream(file);
+            FileOutputStream fos=new FileOutputStream(destFile);
+
+            byte[] input=new byte[64];
+            int readByte = 0;
+            while((readByte= fis.read(input))!=-1){
+                byte[] output=cipher.update(input,0,readByte);
+                if(output!=null){
+                    fos.write(output);
+                }
+            }
+            byte[] output=cipher.doFinal();
+            if(output!=null){
+                fos.write(output);
+            }
+            fis.close();
+            fos.flush();
+            fis.close();
+            System.out.println("Decrypted");
+
+        }else{
+            System.out.println("This is not a file");        }
+    }
+
+    public static void main(String[] args) throws Exception {
+
+          TripleDES tdes = new TripleDES();
+//          String ens = tdes.encrypt("Hello everybody!!");
+//          tdes.decrypt(ens);
+
+        tdes.encryptFile("en.zip","en2.zip");
+        tdes.decryptFile("en2.zip","en3.zip");
     }
 
 }

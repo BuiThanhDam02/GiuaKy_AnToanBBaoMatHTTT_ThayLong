@@ -19,7 +19,7 @@ public class AES {
 
 
     public String encrypt(String inputString, String keyString){
-        SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);
+        SecretKey secretKey = converter.generateSecretKey(keyString,name,bits);
         if (secretKey != null){
             try {
                 Cipher cipher = Cipher.getInstance(name);
@@ -46,7 +46,7 @@ public class AES {
 
     public String decrypt(String inputString, String keyString){
         if ((keyString != null || keyString != "")){
-            SecretKey secretKey = converter.checkSecretKey(keyString,name,bits);
+            SecretKey secretKey = converter.generateSecretKey(keyString,name,bits);
             try {
                 Cipher cipher = Cipher.getInstance(name);
                 // Dữ liệu cần giải mã

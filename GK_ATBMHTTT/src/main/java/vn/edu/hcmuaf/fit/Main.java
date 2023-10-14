@@ -1,10 +1,11 @@
 package vn.edu.hcmuaf.fit;
 
 
-
+import vn.edu.hcmuaf.fit.UI.MainFrame;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        MainFrame ma = new MainFrame();
+
     }
 }
