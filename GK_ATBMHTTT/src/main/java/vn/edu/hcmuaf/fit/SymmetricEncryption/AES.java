@@ -1,32 +1,34 @@
 package vn.edu.hcmuaf.fit.SymmetricEncryption;
 import javax.crypto.SecretKey;
 import javax.crypto.Cipher;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Base64;
 
 public class AES {
-    private static AES instance ;
     private static String name = "AES";
     private static int bits = 128;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
+    private SecretKey secretKey ;
 
-    public static AES getInstance(){
-        if (instance == null) instance = new AES();
-        return instance;
+
+    private AES(){
+        this.secretKey = converter.generateSecretKey(null,name,bits);
+    }
+    public SecretKey exportSecretKey(){
+        return this.secretKey;
     }
 
-    private AES(){}
 
-
-
-    public String encrypt(String inputString, String keyString){
-        SecretKey secretKey = converter.generateSecretKey(keyString,name,bits);
+    public String encrypt(String inputString ){
+        SecretKey secretKey = exportSecretKey();
         if (secretKey != null){
             try {
                 Cipher cipher = Cipher.getInstance(name);
-
                 // Dữ liệu cần mã hóa
                 byte[] dataToEncrypt = inputString.getBytes();
-
                 // Mã hóa dữ liệu
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
                 byte[] encryptedData = cipher.doFinal(dataToEncrypt);
@@ -39,24 +41,19 @@ public class AES {
                 System.out.println("Lỗi khởi tạo key!!");
                 e.printStackTrace();
             }
-
         }
         return null;
     }
 
-    public String decrypt(String inputString, String keyString){
-        if ((keyString != null || keyString != "")){
-            SecretKey secretKey = converter.generateSecretKey(keyString,name,bits);
+    public String decrypt(String inputString ){
+            SecretKey secretKey = exportSecretKey();
             try {
                 Cipher cipher = Cipher.getInstance(name);
                 // Dữ liệu cần giải mã
                 byte[] receivedData = Base64.getDecoder().decode(inputString);
-
                 // Giải mã dữ liệu
-
                 cipher.init(Cipher.DECRYPT_MODE, secretKey);
                 byte[] decryptedData = cipher.doFinal(receivedData);
-
                 String decryptedStringData = new String(decryptedData);
                 // In ra dữ liệu
                 System.out.println("Encrypted data: "+inputString);
@@ -67,16 +64,74 @@ public class AES {
                 e.printStackTrace();
             }
 
-        }else {
-            System.out.println("Bạn phải có key để giải mã!!");
-        }
         return null;
     }
 
+    public void encryptFile(String sourceFile,String destFile) throws Exception{
+        SecretKey secretKey = exportSecretKey();
+        if(secretKey==null) throw new FileNotFoundException("Key not found");
+        File file=new File(sourceFile);
+        if(file.isFile()){
+            Cipher cipher=Cipher.getInstance(name);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
+            FileInputStream fis= new FileInputStream(file);
+            FileOutputStream fos=new FileOutputStream(destFile);
+
+            byte[] input=new byte[64];
+            int byteRead = 0;
+            while((byteRead= fis.read(input))!=-1){
+                byte[] output=cipher.update(input,0,byteRead);
+                if(output!=null){
+                    fos.write(output);
+                }
+            }
+            byte[] output=cipher.doFinal();
+            if(output!=null){
+                fos.write(output);
+            }
+            fis.close();
+            fos.flush();
+            fis.close();
+            System.out.println("Encrypted");
+
+        }else{
+            System.out.println("This is not a file");
+        }
+    }
+    public void decryptFile(String sourceFile,String destFile) throws  Exception{
+        SecretKey secretKey = exportSecretKey();
+        if(secretKey==null) throw new FileNotFoundException("Key not found");
+        File file=new File(sourceFile);
+        if(file.isFile()){
+            Cipher cipher=Cipher.getInstance(name);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+            FileInputStream fis= new FileInputStream(file);
+            FileOutputStream fos=new FileOutputStream(destFile);
+
+            byte[] input=new byte[64];
+            int readByte = 0;
+            while((readByte= fis.read(input))!=-1){
+                byte[] output=cipher.update(input,0,readByte);
+                if(output!=null){
+                    fos.write(output);
+                }
+            }
+            byte[] output=cipher.doFinal();
+            if(output!=null){
+                fos.write(output);
+            }
+            fis.close();
+            fos.flush();
+            fis.close();
+            System.out.println("Decrypted");
+
+        }else{
+            System.out.println("This is not a file");        }
+    }
     public static void main(String[] args) throws Exception {
-//       String encryptedStringData = AES.getInstance().encrypt("Vai thiet",null);
-       AES.getInstance().decrypt("zIPRuwF4DGO9X7L9hxKX/w==","5E5A027F8974F5E06F8C0B28F3F3E23F");
+
 
     }
 }
