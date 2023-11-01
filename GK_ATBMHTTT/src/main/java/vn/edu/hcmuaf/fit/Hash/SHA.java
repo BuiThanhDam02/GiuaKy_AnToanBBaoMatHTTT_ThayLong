@@ -1,4 +1,5 @@
 package vn.edu.hcmuaf.fit.Hash;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -15,10 +16,9 @@ public class SHA {
 
             // Tính toán giá trị băm
             byte[] hashBytes = sha256Digest.digest(inputBytes);
-
+            BigInteger outputs = new BigInteger(1,hashBytes);
             // Chuyển đổi giá trị băm thành dạng hexa
-            String hashHex = bytesToHex(hashBytes);
-
+            String hashHex = outputs.toString(16);
             System.out.println("Input: " + input);
             System.out.println("SHA-256 Hash: " + hashHex);
         } catch (NoSuchAlgorithmException e) {
@@ -26,11 +26,5 @@ public class SHA {
         }
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
+
 }

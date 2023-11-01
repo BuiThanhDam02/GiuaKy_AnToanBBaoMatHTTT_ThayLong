@@ -12,6 +12,7 @@ import javax.crypto.Cipher;
 public class RSA {
 
     private static String name = "RSA/ECB/PKCS1Padding";
+    private static String keyName = "RSA";
     private static int bits = 2048;
     private PublicKey publicKey ;
     private PrivateKey privateKey;
@@ -19,7 +20,9 @@ public class RSA {
     public RSA()   {
         // Tạo cặp khóa RSA
         try{
-            KeyPair keyPair = generateRSAKeyPair();
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyName);
+            keyPairGenerator.initialize(bits); // Độ dài khóa 2048 bit
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
             // Lấy khóa công khai và khóa bí mật từ cặp khóa
             this.publicKey = keyPair.getPublic();
             this.privateKey = keyPair.getPrivate();
@@ -35,11 +38,6 @@ public class RSA {
         return this.privateKey;
     }
 
-    public static KeyPair generateRSAKeyPair() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(bits); // Độ dài khóa 2048 bit
-        return keyPairGenerator.generateKeyPair();
-    }
 
     public byte[] encrypt(String plainText) throws Exception {
         PublicKey pubk = exportPublicKey();

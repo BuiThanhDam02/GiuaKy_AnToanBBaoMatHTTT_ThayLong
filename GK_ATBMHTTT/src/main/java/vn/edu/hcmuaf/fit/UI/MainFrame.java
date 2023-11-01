@@ -21,7 +21,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JPanel contentContainer = new JPanel(new CardLayout());
 
     private JPanel mainPanel = new JPanel();
-    private JPanel southPanel = new JPanel();
+//    private JPanel southPanel = new JPanel();
     private JButton symButton = new JButton("Mã hóa đối xứng");
     private JButton asymButton = new JButton("Mã hóa bất đối xứng");
     private JButton hashButton = new JButton("Mã hóa hash");
@@ -29,7 +29,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public MainFrame(){
         this.setTitle("Ứng dụng mã hóa");
-        this.setSize(1200, 800);
+        this.setSize(1200, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 
@@ -53,8 +53,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
         westPanel.setPreferredSize(new Dimension(150, 200));
         westPanel.setBackground(new Color(143, 152, 255));
-        southPanel.setPreferredSize(new Dimension(200, 100));
-        southPanel.setBackground(Color.WHITE);
+//        southPanel.setPreferredSize(new Dimension(200, 100));
+//        southPanel.setBackground(Color.WHITE);
 
 
         contentContainer.add(symmetricPanel, "Symmetric");
@@ -66,7 +66,7 @@ public class MainFrame extends JFrame implements ActionListener {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(westPanel, BorderLayout.WEST);
         mainPanel.add(contentContainer, BorderLayout.CENTER);
-        mainPanel.add(southPanel, BorderLayout.SOUTH);
+//        mainPanel.add(southPanel, BorderLayout.SOUTH);
 
         this.add(mainPanel);
     }
@@ -78,19 +78,19 @@ public class MainFrame extends JFrame implements ActionListener {
         String buttonValue = sourceButton.getActionCommand();
         switch (buttonValue){
             case "Symmetric":
-                System.out.println("sym");
+//                System.out.println("sym");
                 changeCenterLayout("Symmetric");
                 break;
             case "Asymmetric":
-                System.out.println("as");
+//                System.out.println("as");
                 changeCenterLayout("Asymmetric");
                 break;
             case "Hash":
-                System.out.println("h");
+//                System.out.println("h");
                 changeCenterLayout("Hash");
                 break;
             case "CKDT":
-                System.out.println("c");
+//                System.out.println("c");
                 changeCenterLayout("CKDT");
                 break;
         }

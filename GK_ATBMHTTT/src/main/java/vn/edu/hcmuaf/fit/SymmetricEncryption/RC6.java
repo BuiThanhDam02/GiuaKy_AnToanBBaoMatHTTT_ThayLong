@@ -7,19 +7,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.Security;
 import java.util.Base64;
 
 public class RC6 {
-    private static RC6 instance ;
+
     private static String name = "RC6";
     private static int bits = 128;
     private static SymmetricConverter converter = SymmetricConverter.getInstance();
 
     private SecretKey secretKey ;
 
-    private RC6(){
-        this.secretKey = converter.generateSecretKey(null,name,bits);
+    public RC6(){
 
+
+    }
+    public void createKey(String keyString){
+        this.secretKey = converter.generateSecretKey(keyString,name,bits);
     }
     public SecretKey exportSecretKey(){
         return this.secretKey;
@@ -138,5 +142,12 @@ public class RC6 {
 
         }else{
             System.out.println("This is not a file");        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        RC6 m = new RC6();
+        m.encryptFile("en.zip","en2.zip");
+        m.decryptFile("en2.zip","en3.zip");
     }
 }

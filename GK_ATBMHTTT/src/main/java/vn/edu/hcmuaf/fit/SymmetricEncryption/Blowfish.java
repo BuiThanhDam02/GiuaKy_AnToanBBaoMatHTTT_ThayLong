@@ -18,7 +18,10 @@ public class Blowfish {
 
 
     public Blowfish(){
-        this.secretKey = converter.generateSecretKey(null,name,bits);
+
+    }
+    public void createKey(String keyString){
+        this.secretKey = converter.generateSecretKey(keyString,name,bits);
     }
     public SecretKey exportSecretKey(){
         return this.secretKey;
@@ -135,7 +138,7 @@ public class Blowfish {
         }else{
             System.out.println("This is not a file");        }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
     }
 }

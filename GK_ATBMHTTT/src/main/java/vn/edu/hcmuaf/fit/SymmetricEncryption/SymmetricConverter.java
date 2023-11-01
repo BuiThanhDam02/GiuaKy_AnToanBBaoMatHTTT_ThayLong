@@ -4,6 +4,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.util.Base64;
 
 public class SymmetricConverter {
@@ -69,6 +70,7 @@ public class SymmetricConverter {
     }
 
     public SecretKey generateSecretKey(String key , String algoName , int algoBits ){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         if (!(key == "" || key == null)){
             System.out.println("KeyString tồn tại!");
             try {
@@ -82,12 +84,20 @@ public class SymmetricConverter {
         }else {
             System.out.println("KeyString Không tồn tại!");
             try {
+                SecretKey secretKey = null;
+                if (algoName.equals("RC5")||algoName.equals("RC6")){
+                    KeyGenerator keyGenerator = KeyGenerator.getInstance(algoName,"BC");
+                    keyGenerator.init(algoBits, new SecureRandom()); // Đặt kích thước khóa ( bits)
+                    secretKey = keyGenerator.generateKey();
+                }else{
+                    KeyGenerator keyGenerator = KeyGenerator.getInstance(algoName);
+                    keyGenerator.init(algoBits); // Đặt kích thước khóa ( bits)
+                    secretKey = keyGenerator.generateKey();
 
-                KeyGenerator keyGenerator = KeyGenerator.getInstance(algoName);
-                keyGenerator.init(algoBits); // Đặt kích thước khóa ( bits)
-                SecretKey secretKey = keyGenerator.generateKey();
+                }
                 System.out.println("Khởi tạo Key");
                 System.out.println("Key của bạn là: " + secretKeyToString(secretKey));
+
                 return secretKey;
             }
             catch (Exception e) {

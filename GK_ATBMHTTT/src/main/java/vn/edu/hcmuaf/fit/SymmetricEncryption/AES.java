@@ -14,8 +14,12 @@ public class AES {
     private SecretKey secretKey ;
 
 
-    private AES(){
-        this.secretKey = converter.generateSecretKey(null,name,bits);
+    public AES(){
+
+    }
+
+    public void createKey(String keyString){
+        this.secretKey = converter.generateSecretKey(keyString,name,bits);
     }
     public SecretKey exportSecretKey(){
         return this.secretKey;

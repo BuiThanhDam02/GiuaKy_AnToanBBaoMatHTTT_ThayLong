@@ -3,7 +3,7 @@
 //public class Hill {
 //    private final int[][] keyMatrix;
 //
-//    public HillCipher(int[][] keyMatrix) {
+//    public Hill(int[][] keyMatrix) {
 //        this.keyMatrix = keyMatrix;
 //    }
 //
@@ -55,7 +55,7 @@
 //        for (int i = 0; i < matrix.length; i++) {
 //            for (int j = 0; j < vector.length; j++) {
 //                result[i] += matrix[i][j] * vector[j];
-//                result[i] %= 26; // Modulo 26 for English alphabet
+//                result[i] %= 26;
 //            }
 //        }
 //        return result;
@@ -63,7 +63,7 @@
 //
 //    private int[][] calculateInverseMatrix(int[][] matrix) {
 //        int det = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-//        int detInverse = calculateModularInverse(det, 26); // Modulo 26 for English alphabet
+//        int detInverse = calculateModularInverse(det, 26);
 //        int[][] inverseMatrix = {
 //                {matrix[1][1], -matrix[0][1]},
 //                {-matrix[1][0], matrix[0][0]}
@@ -71,7 +71,7 @@
 //        for (int i = 0; i < 2; i++) {
 //            for (int j = 0; j < 2; j++) {
 //                inverseMatrix[i][j] *= detInverse;
-//                inverseMatrix[i][j] = (inverseMatrix[i][j] % 26 + 26) % 26; // Modulo 26 for English alphabet
+//                inverseMatrix[i][j] = (inverseMatrix[i][j] % 26 + 26) % 26;
 //            }
 //        }
 //        return inverseMatrix;
@@ -84,7 +84,7 @@
 //                return x;
 //            }
 //        }
-//        return -1; // Modular inverse does not exist
+//        return -1;
 //    }
 //    public static void main(String[] args) {
 //        int[][] keyMatrix = {
@@ -92,7 +92,7 @@
 //                {1, 13}
 //        };
 //
-//        HillCipher hillCipher = new HillCipher(keyMatrix);
+//        Hill hillCipher = new Hill(keyMatrix);
 //
 //        String plaintext = "HELLO";
 //        String ciphertext = hillCipher.encrypt(plaintext);

@@ -17,9 +17,11 @@ public class TripleDES {
 
 
     public TripleDES(){
-        this.secretKey = converter.generateSecretKey(null,keyName,bits);
-    }
 
+    }
+    public void createKey(String keyString){
+        this.secretKey = converter.generateSecretKey(keyString,keyName,bits);
+    }
     public String getKeyAlgoName(){
         return keyName;
     }
