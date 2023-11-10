@@ -1,6 +1,6 @@
 package vn.edu.hcmuaf.fit.UI;
 
-import vn.edu.hcmuaf.fit.UI.SymmetricUI.SEPanel;
+import vn.edu.hcmuaf.fit.UI.ChildUI.SEPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +28,7 @@ public class SymmetricPanel extends JPanel implements ActionListener {
         this.add(l);
         this.add(northPanel,BorderLayout.NORTH);
         this.add(contentContainer, BorderLayout.CENTER);
-        this.setBackground(new Color(227, 227, 227));
+        this.setBackground(new Color(224, 224, 224));
         this.setPreferredSize(new Dimension(1050, 700));
     }
 

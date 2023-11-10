@@ -28,8 +28,10 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton ckdtButton = new JButton("Mã hóa chữ ký điện tử");
 
     public MainFrame(){
+        System.setProperty("file.encoding", "UTF-8");
+        setDefaultCharset(StandardCharsets.UTF_8);
         this.setTitle("Ứng dụng mã hóa");
-        this.setSize(1200, 700);
+        this.setSize(1200, 750);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 
@@ -37,6 +39,10 @@ public class MainFrame extends JFrame implements ActionListener {
         asymButton.setActionCommand("Asymmetric");
         hashButton.setActionCommand("Hash");
         ckdtButton.setActionCommand("CKDT");
+        symButton.setBackground(Color.WHITE);
+        asymButton.setBackground(Color.WHITE);
+        hashButton.setBackground(Color.WHITE);
+        ckdtButton.setBackground(Color.WHITE);
         symButton.addActionListener(this);
         asymButton.addActionListener(this);
         hashButton.addActionListener(this);
@@ -99,6 +105,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private void changeCenterLayout(String layout){
         CardLayout cardLayout = (CardLayout) contentContainer.getLayout();
         cardLayout.show(contentContainer, layout);
+        this.pack();
     }
     private static void setDefaultCharset(java.nio.charset.Charset charset) {
         System.setProperty("sun.awt.font.NativeFontWrapper.fontcharset", charset.name());
@@ -111,8 +118,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     }
     public static void main(String[] args) {
-        System.setProperty("file.encoding", "UTF-8");
-        setDefaultCharset(StandardCharsets.UTF_8);
+
 //        SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
 }

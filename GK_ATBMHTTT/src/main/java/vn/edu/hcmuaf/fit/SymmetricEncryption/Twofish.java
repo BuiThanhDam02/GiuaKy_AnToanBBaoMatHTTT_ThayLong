@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class Twofish {
+public class Twofish implements Sym{
 
     private static String name = "Twofish";
 
@@ -30,6 +30,41 @@ public class Twofish {
     public Twofish(){
 
     }
+    @Override
+    public String getEncryptionName() {
+        return name;
+    }
+    @Override
+    public int getEncryptionBits() {
+        return keyBits;
+    }
+    @Override
+    public boolean checkStringKeyValid(String keyString) {
+        String[] str = keyString.split("###");
+        String keyIVStr = str[1];
+        String keyStr = str[0];
+
+        byte[] ikey = converter.hexStringToByteArray(keyStr);
+        byte[] checkKey = new byte[keyBits/8];
+        if (ikey.length==checkKey.length){
+            byte[] iivkey = converter.hexStringToByteArray(keyIVStr);
+            byte[] checkIvKey = new byte[ivBits/8];
+            if (iivkey.length==checkIvKey.length){
+                this.iv = iivkey;
+                this.key=ikey;
+                return true;
+            }else{
+                System.out.println("Chiều dài IV không đúng với "+ivBits+" !! Vui lòng nhập đúng kích thước IV");
+                return false;
+            }
+
+        }else{
+            System.out.println("Chiều dài key không đúng với " + keyBits + " !! Vui lòng nhập đúng kích thước key");
+            return false;
+        }
+
+    }
+    @Override
     public void createKey(String keyString, String ivString){
         if ((keyString == ""||keyString== null)&&(ivString ==""||ivString==null)){
             this.key = converter.generateRandomKey(keyBits);
@@ -38,22 +73,28 @@ public class Twofish {
             System.out.println("Key của bạn là: " + converter.bytesToHex(this.key));
             System.out.println("IV của bạn là: " + converter.bytesToHex(this.iv));
         }else {
-            try {
-                this.key = converter.hexStringToByteArray(keyString);
-                try {
-                    this.iv = converter.hexStringToByteArray(ivString);
-                }catch (Exception e){
+            byte[] ikey = converter.hexStringToByteArray(keyString);
+            byte[] checkKey = new byte[keyBits/8];
+            if (ikey.length==checkKey.length){
+                byte[] iivkey = converter.hexStringToByteArray(ivString);
+                byte[] checkIvKey = new byte[ivBits/8];
+                if (iivkey.length==checkIvKey.length){
+                    this.iv = iivkey;
+                    this.key=ikey;
+                }else{
                     System.out.println("Chiều dài IV không đúng với "+ivBits+" !! Vui lòng nhập đúng kích thước IV");
                 }
-            }catch (Exception e) {
+
+            }else{
                 System.out.println("Chiều dài key không đúng với " + keyBits + " !! Vui lòng nhập đúng kích thước key");
             }
         }
     }
 
     public byte[] exportKey(){return this.key;}
-    public byte[] exportIV(){return this.iv;}
 
+    public byte[] exportIV(){return this.iv;}
+    @Override
     public String encrypt(String inputString) {
 
         try {
@@ -76,6 +117,19 @@ public class Twofish {
 
     }
 
+
+
+    @Override
+    public String exportStringKey() {
+        return converter.bytesToHex(this.key)+"###"+converter.bytesToHex(this.iv);
+    }
+
+    @Override
+    public void createKey(String keyString) {
+
+    }
+
+    @Override
     public String decrypt(String inputString) {
 
         byte[] ciphertext = Base64.getDecoder().decode(inputString);
@@ -98,14 +152,14 @@ public class Twofish {
         }
 
     }
-
-    public void encryptFile(String inputFile, String outputFile) throws Exception {
+    @Override
+    public boolean encryptFile(String sourceFile, String destFile) throws Exception {
         if(exportKey()==null) throw new FileNotFoundException("Key not found");
         if(exportIV()==null) throw new FileNotFoundException("Key not found");
-        File file=new File(inputFile);
+        File file=new File(sourceFile);
         if(file.isFile()){
-            try (FileInputStream inputStream = new FileInputStream(inputFile);
-                 FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+            try (FileInputStream inputStream = new FileInputStream(sourceFile);
+                 FileOutputStream outputStream = new FileOutputStream(destFile)) {
 
                 BlockCipher cipher = new TwofishEngine();
                 BufferedBlockCipher bufferedCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(cipher));
@@ -123,22 +177,30 @@ public class Twofish {
 
                 int bytesProcessed = bufferedCipher.doFinal(outputBuffer, 0);
                 outputStream.write(outputBuffer, 0, bytesProcessed);
+                inputStream.close();
+                outputStream.flush();
+                outputStream.close();
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
+
+
         }else{
             System.out.println("This is not a file");
+            return false;
         }
 
     }
-
-    public void decryptFile(String inputFile, String outputFile) throws Exception {
+    @Override
+    public boolean decryptFile(String sourceFile, String destFile) throws Exception {
         if(exportKey()==null) throw new FileNotFoundException("Key not found");
         if(exportIV()==null) throw new FileNotFoundException("Key not found");
-        File file=new File(inputFile);
+        File file=new File(sourceFile);
         if(file.isFile()){
-            try (FileInputStream inputStream = new FileInputStream(inputFile);
-                 FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+            try (FileInputStream inputStream = new FileInputStream(sourceFile);
+                 FileOutputStream outputStream = new FileOutputStream(destFile)) {
 
                 BlockCipher cipher = new TwofishEngine();
                 BufferedBlockCipher bufferedCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(cipher));
@@ -156,11 +218,17 @@ public class Twofish {
 
                 int bytesProcessed = bufferedCipher.doFinal(outputBuffer, 0);
                 outputStream.write(outputBuffer, 0, bytesProcessed);
+                inputStream.close();
+                outputStream.flush();
+                outputStream.close();
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
         }else{
             System.out.println("This is not a file");
+            return false;
         }
 
     }
@@ -168,9 +236,9 @@ public class Twofish {
 
     public static void main(String[] args) throws Exception {
         Twofish tf =new Twofish();
-        tf.createKey(null,null);
-        tf.encryptFile("en.zip","en2.zip");
-        tf.decryptFile("en2.zip","en3.zip");
+        tf.checkStringKeyValid("asdasd###asdsad");
+//        tf.encryptFile("en.zip","en2.zip");
+//        tf.decryptFile("en2.zip","en3.zip");
 
 
     }

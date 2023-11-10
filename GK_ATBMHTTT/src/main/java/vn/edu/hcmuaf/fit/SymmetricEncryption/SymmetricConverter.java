@@ -78,7 +78,9 @@ public class SymmetricConverter {
                 System.out.println("Chiều dài khóa hợp lệ!");
                 return sk;
             }catch (Exception e){
+
                 System.out.println("Chiều dài khóa không hợp lệ! Vui lòng cung cấp khóa có độ dài "+algoBits+" bits.");
+                return null;
             }
 
         }else {
